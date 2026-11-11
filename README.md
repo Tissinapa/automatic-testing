@@ -1,18 +1,8 @@
 # AI Agentic Software Testing Thesis
 
-A LangGraph-based AI testing agent that autonomously generates, executes, and evaluates REST API tests. Compared against traditional testing frameworks (Robot Framework, Pytest + HTTPX, Schemathesis) as part of a master's thesis experiment.
+A LangGraph-based AI testing agent that autonomously generates, executes, and evaluates REST API tests.
 
----
 
-## Repositories
-
-| Repo | Description |
-|---|---|
-| `agentic-testing-thesis` | This repo AI agent, comparison frameworks, metrics |
-| [fastapi-target-thesis](https://github.com/Tissinapa/testing-target-python-thesis) | Python FastAPI target application with seeded bugs |
-| [springboot-targe-thesis](https://github.com/Tissinapa/testing-target-java-thesis) | Java Spring Boot target application with seeded bugs |
-
----
 
 
 
@@ -134,35 +124,7 @@ streamlit run ui/app.py
 
 ---
 
-## Running Comparison Frameworks
 
-### Robot Framework
-
-```bash
-# Python app
-uv run robot --outputdir results/robot/pythonAPI tests/robot/python_api.robot
-
-# Java app
-uv run robot --outputdir results/robot/javaAPI tests/robot/java_api.robot
-```
-
-### Pytest + HTTPX
-
-```bash
-pytest tests/pytest/test_python_api.py -v --json-report --json-report-file=results/pytest/python_results.json
-```
-
-### Schemathesis
-
-```bash
-# Python app
-uv run schemathesis run http://localhost:8000/openapi.json --checks all -H "Authorization: Bearer Taman-ei-p1t1a1s-0lla-na1n-123" --report junit --report-dir results/schemathesis/python
-
-# Java app
-uv run schemathesis run http://localhost:8080/v3/api-docs --checks all -H "Authorization: Bearer validation-token-123" --report junit --report-dir results/schemathesis/java
-```
-
----
 
 ## Metrics and Results
 
