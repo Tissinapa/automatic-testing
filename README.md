@@ -1,4 +1,4 @@
-# AI Agentic Software Testing Thesis
+# Automatic testing using RAG (Not yet implemented but will be)
 
 A LangGraph-based AI testing agent that autonomously generates, executes, and evaluates REST API tests.
 
