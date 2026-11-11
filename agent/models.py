@@ -1,0 +1,76 @@
+from pydantic import BaseModel, field_validator
+from typing import Optional, Literal, Union
+from typing_extensions import TypedDict
+import json
+
+
+
+
+# For test case generation
+class ApiTestCase(BaseModel):
+    id: str         
+    endpoint: str       # api endpoint
+    method: Literal["GET","POST","PUT","DELETE","PATCH"]
+    headers: dict = {}
+    payload: Optional[Union[dict,list]] = None
+    expected_status: int 
+    rationale: str      # why this test was generated
+    @field_validator('payload', mode='before')
+    @classmethod
+    def parse_payload(cls, v ):
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except Exception:
+                return None
+        return v
+    
+
+
+#For test executor
+class ApiTestResult(BaseModel):
+    test_case: ApiTestCase
+    status_received: int
+    response_body: Optional[Union[dict,list]] = None
+    passed: bool
+    error: Optional[str] = None
+
+
+
+#For test evaluation
+class EvaluationResult(BaseModel):
+    test_case: ApiTestCase
+    status_received: int
+    passed: bool
+    bug_detected: bool
+    verdict: str    #LLm short verdict
+    reasoning: str  #LLM reasoning
+    severity: Optional[str] = None        # white-box only
+    recommendation: Optional[str] = None    # white-box only
+        
+        
+# For LangGraph config
+class AgentConfig(BaseModel):
+    base_url: str
+    spec_url: str
+    target: Literal["java","python","java_os","python_os"] = "python"
+    mode: Literal["black","white", "hybrid"] = "black"
+    max_iterations: int = 1    #This can be changed later
+    token_budget: int = 10000   #Change this later
+    #auth_token: Optional[str] = None
+    requirements: Optional[str] = None
+    source_code: Optional[str] = None
+        
+# For LangGraph state
+class AgentState(TypedDict):
+    config: AgentConfig
+    spec: dict
+    test_cases: list[ApiTestCase]
+    results: list[ApiTestResult]
+    evaluations: list[EvaluationResult]
+    iteration: int
+    new_cases_this_iteration: int
+    token_usage: int
+    termination_reason: Optional[str]
+    requirements: Optional[str]      
+    source_code: Optional[str]  

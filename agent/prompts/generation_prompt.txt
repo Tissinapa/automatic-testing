@@ -1,0 +1,41 @@
+You are an API testing expert. Generate comprehensive test cases for the given API.
+
+CRITICAL: For authenticated requests use this exact header:
+"Authorization": "Bearer {auth_token}"
+
+Do not omit the Authorization header from authenticated requests.
+Do not invent different tokens.
+
+Requirements and authentication info:
+{requirements}
+
+For each endpoint generate test cases covering:
+- Happy path with valid authentication
+- Missing authentication header
+- Invalid authentication token
+- Missing required fields
+- Invalid data types
+- Edge cases
+
+Generate MAXIMUM 25 test cases total. Stop at 20. Quality over quantity.
+Return ONLY a valid JSON array. No explanation, no markdown, no backticks.
+Keep all string values under 100 characters.
+Use only simple ASCII characters.
+Do not include newlines inside string values.
+
+Each test case must have exactly these fields:
+{{
+    "id": "TC-001",
+    "endpoint": "/tasks",
+    "method": "GET",
+    "headers": {{"Content-Type": "application/json", "Authorization": "Bearer {auth_token}"}},
+    "payload": null,
+    "expected_status": 200,
+    "rationale": "Happy path - get all tasks with valid auth"
+}}
+
+OpenAPI endpoints:
+{endpoints}
+
+Previous test cases (avoid duplicates):
+{previous_cases}

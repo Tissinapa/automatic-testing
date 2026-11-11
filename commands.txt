@@ -1,0 +1,137 @@
+!!!!!!!!!!!
+
+Aloita tästä kun pystyt poista .git -> git init -> git remote add origin https://github.com/Tissinapa/automatic-testing.git -> 
+git branch -M main ->
+git push -u origin main
+
+ehkä toimii tämän jälkeen
+
+!!!!!!!!!!!
+
+CMD terminal commands AND Bash commands
+
+Run Agent UI 
+streamlit run ui/app.py
+
+Python target
+cd /a/fastapi-target-thesis
+docker compose up
+
+Java target
+cd /a/springboot-targe-thesis
+docker compose up
+
+run FastAPI CMD
+uvicorn app.main:app --reload --port 8000
+
+
+CMD run ROBOT FRAMEWORK tests Python and java
+
+uv run robot --outputdir results/robot/pythonAPI tests-api/robot/python_api.robot
+uv run robot --outputdir results/robot/javaAPI tests-api/robot/java_api.robot
+
+CMD run PYTEST for target app testing
+pytest tests-api/pytest/test_python_api.py -v
+
+Run pytests if win error 5 access denied
+pytest tests/ -v --basetemp=./tmp
+if no winerrors then
+pytest tests/ -v
+
+Bash run Schemathesis
+PYTHON
+uv run schemathesis run http://localhost:8000/openapi.json \
+  --checks all \
+  --output-truncate false \
+  -H "Authorization: Bearer Taman-ei-p1t1a1s-0lla-na1n-123" \
+  --report junit \
+  --report results/schemathesis/python_report.xml
+
+  uv run schemathesis run http://localhost:8000/openapi.json \
+  --checks all \
+  --output-truncate false \
+  -H "Authorization: Bearer Taman-ei-p1t1a1s-0lla-na1n-123" \
+
+  uv run schemathesis run http://localhost:8000/openapi.json \
+  --checks all \
+  -H "Authorization: Bearer Taman-ei-p1t1a1s-0lla-na1n-123" \
+  --report junit \
+  --report-dir results/schemathesis/python
+
+JAVA
+uv run schemathesis run http://localhost:8080/v3/api-docs \
+  --checks all \
+  -H "Authorization: Bearer validation-token-123" \
+  --report junit \
+  --report-dir results/schemathesis/java
+
+
+-----AGENT--------
+
+FOR PYTHON 
+
+
+
+python -m agent.run --target python --base-url http://localhost:8000 --spec-url http://localhost:8000/openapi.json --mode black --token-budget 30000
+python -m agent.run --target python --base-url http://localhost:8000 --spec-url http://localhost:8000/openapi.json --mode white --requirements docs/requirements_python.md --source-code A:\fastapi-target-thesis\app\routers\tasks.py --token-budget 10000
+python -m agent.run --target python --base-url http://localhost:8000 --spec-url http://localhost:8000/openapi.json --mode hybrid --requirements docs/requirements_python.md --source-code A:\fastapi-target-thesis\app\routers\tasks.py --token-budget 30000
+
+FOR JAVA
+python -m agent.run --target java --base-url http://localhost:8080 --spec-url http://localhost:8080/v3/api-docs --mode black --requirements docs/requirements_java.md--token-budget 30000
+python -m agent.run --target java --base-url http://localhost:8080 --spec-url http://localhost:8080/v3/api-docs --mode white --requirements docs/requirements_java.md --source-code A:\springboot-targe-thesis\src\main\java\com\example\springboottargethesis\controller\TaskController.java --token-budget 10000
+python -m agent.run --target java --base-url http://localhost:8080 --spec-url http://localhost:8080/v3/api-docs --mode hybrid --requirements docs/requirements_java.md --source-code A:\springboot-targe-thesis\src\main\java\com\example\springboottargethesis\controller\TaskController.java --token-budget 30000
+
+AGENT OS TESTING
+- petstore3
+python -m agent.run --target java_os --base-url https://petstore3.swagger.io/api/v3 --spec-url https://petstore3.swagger.io/api/v3/openapi.json --mode black --token-budget 30000
+python -m agent.run --target java_os --base-url https://petstore3.swagger.io/api/v3 --spec-url https://petstore3.swagger.io/api/v3/openapi.json --mode white --source-code A:\swagger-petstore\src\main\java\io\swagger\petstore\controller\PetController.java --token-budget 10000
+python -m agent.run --target java_os --base-url https://petstore3.swagger.io/api/v3 --spec-url https://petstore3.swagger.io/api/v3/openapi.json --mode hybrid --source-code A:\swagger-petstore\src\main\java\io\swagger\petstore\controller\PetController.java --token-budget 40000
+
+FasApi full-stack template
+python -m agent.run --target python_os --base-url http://localhost --spec-url http://localhost/api/v1/openapi.json --mode black --requirements docs/requirements_python_os.md --token-budget 30000
+python -m agent.run --target python_os --base-url http://localhost --spec-url http://localhost/api/v1/openapi.json --mode white --requirements docs/requirements_python_os.md --source-code A:\full-stack-fastapi-template\backend\app\api\routes\users.py --token-budget 10000
+python -m agent.run --target python_os --base-url http://localhost --spec-url http://localhost/api/v1/openapi.json --mode hybrid --requirements docs/requirements_python_os.md --source-code A:\full-stack-fastapi-template\backend\app\api\routes\users.py --token-budget 40000
+----------
+
+OS TESTING WITH SCHEMATHESIS
+petstore3
+uv run schemathesis run https://petstore3.swagger.io/api/v3/openapi.json --checks all --report junit --report-dir results/schemathesis/java_os
+
+FastApi full-stack template
+uv run schemathesis run http://localhost/api/v1/openapi.json --checks all --report junit --report-dir results/schemathesis/python_os
+
+
+Test result skripts
+python -c "
+import json
+with open('results/agent/agentpython_os_20260903_130154.json') as f:
+    data = json.load(f)
+print('Summary:', data['summary'])
+print()
+print('Bugs:')
+for b in data['bugs']:
+    print(f\"  {b['method']} {b['endpoint']} — {b['verdict']}\")
+"
+
+# Black-box Python
+python -m agent.run --target python --base-url http://localhost:8000 --spec-url http://localhost:8000/openapi.json --mode black --requirements docs/requirements_python.md --token-budget 40000
+
+# Black-box Java
+python -m agent.run --target java --base-url http://localhost:8080 --spec-url http://localhost:8080/v3/api-docs --mode black --requirements docs/requirements_java.md --token-budget 40000
+
+# White-box Python
+python -m agent.run --target python --base-url http://localhost:8000 --spec-url http://localhost:8000/openapi.json --mode white --requirements docs/requirements_python.md --source-code A:\fastapi-target-thesis\app\routers\tasks.py --token-budget 10000
+
+# White-box Java
+python -m agent.run --target java --base-url http://localhost:8080 --spec-url http://localhost:8080/v3/api-docs --mode white --requirements docs/requirements_java.md --source-code A:\springboot-targe-thesis\src\main\java\com\example\springboottargethesis\controller\TaskController.java --token-budget 10000
+
+# Hybrid Python
+python -m agent.run --target python --base-url http://localhost:8000 --spec-url http://localhost:8000/openapi.json --mode hybrid --requirements docs/requirements_python.md --source-code A:\fastapi-target-thesis\app\routers\tasks.py --token-budget 40000
+
+# Hybrid Java
+python -m agent.run --target java --base-url http://localhost:8080 --spec-url http://localhost:8080/v3/api-docs --mode hybrid --requirements docs/requirements_java.md --source-code A:\springboot-targe-thesis\src\main\java\com\example\springboottargethesis\controller\TaskController.java --token-budget 40000
+
+
+run results
+python metrics/collection.py
+python metrics/compare.py

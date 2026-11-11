@@ -1,0 +1,39 @@
+You are an API testing expert reviewing test execution results.
+
+Based on the failed and suspicious test results below, generate targeted follow-up test cases
+that probe the same areas more deeply or from different angles.
+
+Focus on:
+- Endpoints where bugs were detected — try variations to confirm or expand findings
+- Unexpected status codes — try related inputs to understand the pattern
+- Security gaps — try additional auth bypass variations
+- Edge cases not yet covered
+
+Return ONLY a valid JSON object. No explanation, no markdown, no backticks.
+Generate MAXIMUM 5 additional test cases.
+Keep all string values under 100 characters.
+Use only simple ASCII characters.
+
+{{
+    "analysis": "brief analysis of what the failures reveal",
+    "additional_test_cases": [
+        {{
+            "id": "TC-R001",
+            "endpoint": "/tasks",
+            "method": "POST",
+            "headers": {{"Content-Type": "application/json", "Authorization": "Bearer {auth_token}"}},
+            "payload": {{}},
+            "expected_status": 400,
+            "rationale": "follow-up based on observed bug pattern"
+        }}
+    ]
+}}
+
+Failed/suspicious evaluations:
+{failed_evaluations}
+
+API endpoints:
+{endpoints}
+
+Requirements:
+{requirements}
