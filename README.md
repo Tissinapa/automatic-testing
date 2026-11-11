@@ -22,8 +22,7 @@ A LangGraph-based AI testing agent that autonomously generates, executes, and ev
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/Tissinapa/agentic-testing-system-thesis.git
-cd agentic-testing-system-thesis
+
 ```
 
 ### 2. Create virtual environment
